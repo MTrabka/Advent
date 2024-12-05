@@ -14,25 +14,13 @@ if response.status_code == 200:
     input_data = response.text.strip()
 else:
     print(f"Error: {response.status_code}")
-import os
 
-# Input data (you can replace this with actual input from the session or file)
-input_data = '''MMMSXXMASM
-MSAMXMSMSA
-AMXSXMAAMM
-MSAMASMSMX
-XMASAMXAMM
-XXAMMXXAMA
-SMSMSASXSS
-SAXAMASAAA
-MAMMMXMMMM
-MXMXAXMASX'''
 
-# Process the grid
+
 grid = [line.strip() for line in input_data.split("\n") if line.strip()]
 rows, cols = len(grid), len(grid[0])
 
-# Part 1: Find "XMAS" in all directions
+
 target = "XMAS"
 
 def check_diagonal(r, c, dr, dc, target, grid, rows, cols):
@@ -64,19 +52,44 @@ for r in range(rows):
 
 print("Answer for part 1:", len(found_positions))
 
-# Part 2: Find X-MAS patterns
+# Part 2
 def find_xmas_patterns(grid, rows, cols):
     patterns = []
-    for r in range(rows - 2):  # -2, aby upewnić się, że mamy miejsce na ukośne
-        for c in range(cols - 2):  # Unikamy pierwszej i ostatniej kolumny
+    for r in range(rows - 2):
+        for c in range(cols - 2):
             if (
                 grid[r][c] == "M"
+                and grid[r][c+2] == "M"
                 and grid[r+1][c+1] == "A"
+                and grid[r+2][c] == "S"
                 and grid[r+2][c+2] == "S"
-                and grid[r+1][c-1] == "A"
-                and grid[r+2][c-2] == "S"
             ):
-                patterns.append((r+1, c))  # Punkt środkowy A
+                patterns.append((r+1, c+1))
+            elif (
+                grid[r][c] == "M"
+                and grid[r][c+2] == "S"
+                and grid[r+1][c+1] == "A"
+                and grid[r+2][c] == "M"
+                and grid[r+2][c+2] == "S"
+            ):
+                patterns.append((r+1, c+1))
+            elif (
+                grid[r][c] == "S"
+                and grid[r][c+2] == "S"
+                and grid[r+1][c+1] == "A"
+                and grid[r+2][c] == "M"
+                and grid[r+2][c+2] == "M"
+            ):
+                patterns.append((r+1, c+1))
+            elif (
+                grid[r][c] == "S"
+                and grid[r][c+2] == "M"
+                and grid[r+1][c+1] == "A"
+                and grid[r+2][c] == "S"
+                and grid[r+2][c+2] == "M"
+            ):
+                patterns.append((r+1, c+1))
+
     return patterns
 
 xmas_patterns = find_xmas_patterns(grid, rows, cols)
